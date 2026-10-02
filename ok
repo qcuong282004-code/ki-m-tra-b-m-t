@@ -1,0 +1,1033 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<title>Secret Check</title>
+
+<style>
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    min-height:100vh;
+    background:
+        radial-gradient(circle at top left,#ff7aa2 0,transparent 35%),
+        radial-gradient(circle at bottom right,#7c6cff 0,transparent 35%),
+        #11111a;
+
+    color:white;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    padding:20px;
+    overflow:hidden;
+}
+
+/* BACKGROUND DOTS */
+
+.bg-dot{
+    position:fixed;
+    width:5px;
+    height:5px;
+    background:white;
+    border-radius:50%;
+    opacity:.25;
+    animation:float 8s linear infinite;
+}
+
+@keyframes float{
+    from{
+        transform:translateY(110vh);
+    }
+
+    to{
+        transform:translateY(-20vh);
+    }
+}
+
+/* MAIN CARD */
+
+.card{
+    width:100%;
+    max-width:480px;
+
+    background:rgba(20,20,30,.88);
+
+    backdrop-filter:blur(20px);
+
+    border:1px solid rgba(255,255,255,.12);
+
+    border-radius:28px;
+
+    padding:35px;
+
+    box-shadow:
+        0 30px 80px rgba(0,0,0,.5),
+        inset 0 1px rgba(255,255,255,.08);
+
+    text-align:center;
+
+    position:relative;
+    z-index:10;
+}
+
+.logo{
+    width:80px;
+    height:80px;
+
+    margin:0 auto 20px;
+
+    border-radius:24px;
+
+    background:linear-gradient(135deg,#ff668d,#7658ff);
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    font-size:40px;
+
+    box-shadow:0 15px 35px rgba(255,80,130,.25);
+}
+
+h1{
+    font-size:28px;
+    margin-bottom:10px;
+}
+
+.subtitle{
+    color:#aaa;
+    line-height:1.6;
+    font-size:14px;
+    margin-bottom:28px;
+}
+
+/* INPUT */
+
+.input-box{
+    text-align:left;
+    margin-bottom:20px;
+}
+
+.input-box label{
+    font-size:12px;
+    color:#aaa;
+
+    display:block;
+
+    margin-bottom:8px;
+}
+
+input{
+    width:100%;
+    height:50px;
+
+    border:1px solid rgba(255,255,255,.12);
+    outline:none;
+
+    border-radius:13px;
+
+    background:#191925;
+
+    color:white;
+
+    padding:0 16px;
+
+    font-size:15px;
+
+    transition:.2s;
+}
+
+input:focus{
+    border-color:#ff668d;
+
+    box-shadow:
+        0 0 0 4px rgba(255,102,141,.08);
+}
+
+/* BUTTON */
+
+.main-btn{
+    width:100%;
+    height:52px;
+
+    border:none;
+
+    border-radius:14px;
+
+    background:linear-gradient(135deg,#ff668d,#7658ff);
+
+    color:white;
+
+    font-size:15px;
+    font-weight:bold;
+
+    cursor:pointer;
+
+    transition:.25s;
+
+    box-shadow:0 10px 30px rgba(118,88,255,.25);
+}
+
+.main-btn:hover{
+    transform:translateY(-2px);
+}
+
+.small{
+    margin-top:15px;
+    color:#777;
+    font-size:11px;
+}
+
+/* PAGES */
+
+.page{
+    display:none;
+}
+
+.page.active{
+    display:block;
+    animation:show .4s ease;
+}
+
+@keyframes show{
+    from{
+        opacity:0;
+        transform:translateY(10px);
+    }
+
+    to{
+        opacity:1;
+        transform:translateY(0);
+    }
+}
+
+/* SCANNER */
+
+.scanner{
+    width:160px;
+    height:160px;
+
+    margin:10px auto 25px;
+
+    position:relative;
+
+    border-radius:50%;
+
+    border:1px solid rgba(255,255,255,.15);
+
+    display:flex;
+    align-items:center;
+    justify-content:center;
+
+    overflow:hidden;
+}
+
+.scanner::before{
+    content:"";
+
+    position:absolute;
+
+    width:130px;
+    height:130px;
+
+    border-radius:50%;
+
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.scanner::after{
+    content:"";
+
+    position:absolute;
+
+    width:90px;
+    height:90px;
+
+    border-radius:50%;
+
+    border:1px solid rgba(255,255,255,.08);
+}
+
+.scan-line{
+    position:absolute;
+
+    width:140px;
+    height:2px;
+
+    background:#ff668d;
+
+    box-shadow:0 0 15px #ff668d;
+
+    animation:scan 1.5s infinite alternate ease-in-out;
+}
+
+@keyframes scan{
+    from{
+        transform:translateY(-65px);
+    }
+
+    to{
+        transform:translateY(65px);
+    }
+}
+
+.scan-icon{
+    font-size:55px;
+}
+
+/* PROGRESS */
+
+.progress{
+    height:10px;
+
+    width:100%;
+
+    background:#222230;
+
+    border-radius:50px;
+
+    overflow:hidden;
+
+    margin:20px 0 10px;
+}
+
+.progress-bar{
+    height:100%;
+    width:0%;
+
+    background:linear-gradient(
+        90deg,
+        #ff668d,
+        #7658ff
+    );
+
+    border-radius:50px;
+
+    transition:.25s;
+}
+
+.percent{
+    font-size:35px;
+    font-weight:bold;
+
+    margin-bottom:8px;
+}
+
+.status{
+    min-height:25px;
+
+    color:#aaa;
+
+    font-size:13px;
+}
+
+/* RESULT */
+
+.result-icon{
+    font-size:80px;
+
+    margin-bottom:15px;
+
+    animation:bounce 1s infinite;
+}
+
+@keyframes bounce{
+
+    0%,100%{
+        transform:translateY(0);
+    }
+
+    50%{
+        transform:translateY(-10px);
+    }
+}
+
+.result-title{
+    font-size:30px;
+
+    color:#ff799d;
+
+    margin-bottom:10px;
+}
+
+.result-text{
+    color:#bbb;
+
+    line-height:1.7;
+
+    margin-bottom:20px;
+}
+
+.score{
+    background:#191925;
+
+    border:1px solid rgba(255,255,255,.08);
+
+    border-radius:18px;
+
+    padding:18px;
+
+    margin:20px 0;
+}
+
+.score-number{
+    font-size:45px;
+    font-weight:bold;
+
+    background:linear-gradient(
+        135deg,
+        #ff668d,
+        #8d72ff
+    );
+
+    -webkit-background-clip:text;
+
+    color:transparent;
+}
+
+.score-label{
+    color:#888;
+
+    font-size:12px;
+
+    margin-top:5px;
+}
+
+/* FINAL TROLL */
+
+.troll{
+    font-size:65px;
+
+    margin-bottom:15px;
+}
+
+.troll-title{
+    font-size:31px;
+
+    margin-bottom:12px;
+}
+
+.troll-title span{
+    color:#ff668d;
+}
+
+.troll-text{
+    color:#aaa;
+
+    line-height:1.7;
+
+    margin-bottom:25px;
+}
+
+/* CONFETTI */
+
+.confetti{
+    position:fixed;
+
+    width:10px;
+    height:15px;
+
+    top:-20px;
+
+    z-index:100;
+
+    animation:fall 3s linear forwards;
+}
+
+@keyframes fall{
+
+    to{
+        transform:
+            translateY(110vh)
+            rotate(720deg);
+
+        opacity:0;
+    }
+}
+
+/* MOBILE */
+
+@media(max-width:500px){
+
+    .card{
+        padding:27px 21px;
+        border-radius:22px;
+    }
+
+    h1{
+        font-size:24px;
+    }
+
+}
+</style>
+
+</head>
+
+
+<body>
+
+<div class="card">
+
+
+<!-- PAGE 1 -->
+
+<div id="page1" class="page active">
+
+    <div class="logo">
+        🔍
+    </div>
+
+    <h1>Hệ thống kiểm tra bí mật</h1>
+
+    <p class="subtitle">
+        Công nghệ phân tích đặc biệt sẽ kiểm tra
+        một thông tin cực kỳ quan trọng về bạn.
+    </p>
+
+    <div class="input-box">
+
+        <label>
+            Nhập tên của bạn
+        </label>
+
+        <input
+        id="name"
+        placeholder="Nhập tên ở đây..."
+        autocomplete="off">
+
+    </div>
+
+    <button
+    class="main-btn"
+    onclick="start()">
+
+        BẮT ĐẦU KIỂM TRA
+
+    </button>
+
+    <div class="small">
+        Phiên bản thử nghiệm • Kết quả chỉ mang tính giải trí
+    </div>
+
+</div>
+
+
+<!-- PAGE 2 -->
+
+<div id="page2" class="page">
+
+    <div class="scanner">
+
+        <div class="scan-line"></div>
+
+        <div class="scan-icon">
+            🧠
+        </div>
+
+    </div>
+
+    <h1>Đang phân tích...</h1>
+
+    <p class="subtitle">
+        Vui lòng không thoát khỏi trang.
+    </p>
+
+    <div
+    class="percent"
+    id="percent">
+
+        0%
+
+    </div>
+
+    <div class="progress">
+
+        <div
+        class="progress-bar"
+        id="bar">
+        </div>
+
+    </div>
+
+    <div
+    class="status"
+    id="status">
+
+        Đang khởi động hệ thống...
+
+    </div>
+
+</div>
+
+
+<!-- PAGE 3 -->
+
+<div id="page3" class="page">
+
+    <div class="result-icon">
+        🤨
+    </div>
+
+    <div class="result-title">
+        Phát hiện bất thường!
+    </div>
+
+    <p
+    class="result-text"
+    id="resultText">
+
+    </p>
+
+    <div class="score">
+
+        <div
+        class="score-number"
+        id="score">
+
+            99%
+
+        </div>
+
+        <div class="score-label">
+            CHỈ SỐ ĐÁNG NGỜ
+        </div>
+
+    </div>
+
+    <button
+    class="main-btn"
+    onclick="showFinal()">
+
+        XEM KẾT QUẢ CHI TIẾT
+
+    </button>
+
+</div>
+
+
+<!-- PAGE 4 -->
+
+<div id="page4" class="page">
+
+    <div class="troll">
+        😂
+    </div>
+
+    <div class="troll-title">
+
+        <span id="finalName"></span>
+        bị troll rồi!
+
+    </div>
+
+    <p class="troll-text">
+
+        Không có hệ thống bí mật nào hết 😭
+        <br><br>
+
+        Tất cả chỉ là một trang web troll thôi.
+        Ai bảo tò mò bấm vào làm gì 😂
+
+    </p>
+
+    <button
+    id="escapeBtn"
+    class="main-btn"
+    onclick="escapeButton()">
+
+        TÔI KHÔNG BỊ LỪA 😎
+
+    </button>
+
+</div>
+
+
+</div>
+
+
+<script>
+
+/* ==============================
+   PAGE SWITCH
+============================== */
+
+function changePage(page){
+
+    document
+    .querySelectorAll(".page")
+    .forEach(p =>
+        p.classList.remove("active")
+    );
+
+    document
+    .getElementById(page)
+    .classList.add("active");
+
+}
+
+
+/* ==============================
+   START
+============================== */
+
+function start(){
+
+    const name =
+    document
+    .getElementById("name")
+    .value
+    .trim();
+
+    if(name === ""){
+
+        alert("Nhập tên trước đã 😂");
+
+        return;
+
+    }
+
+    localStorage.setItem(
+        "trollName",
+        name
+    );
+
+    changePage("page2");
+
+    runScan();
+
+}
+
+
+/* ==============================
+   SCANNER
+============================== */
+
+function runScan(){
+
+    let value = 0;
+
+    const bar =
+    document.getElementById("bar");
+
+    const percent =
+    document.getElementById("percent");
+
+    const status =
+    document.getElementById("status");
+
+
+    const messages = [
+
+        "Đang kết nối hệ thống...",
+
+        "Đang kiểm tra dữ liệu...",
+
+        "Đang phân tích mức độ tò mò...",
+
+        "Phát hiện tín hiệu đáng ngờ...",
+
+        "Đang xác minh kết quả...",
+
+        "Sắp hoàn tất..."
+
+    ];
+
+
+    const timer =
+    setInterval(function(){
+
+        value +=
+        Math.floor(
+            Math.random()*6
+        ) + 2;
+
+
+        if(value > 100){
+            value = 100;
+        }
+
+
+        bar.style.width =
+        value + "%";
+
+        percent.innerText =
+        value + "%";
+
+
+        if(value < 15){
+
+            status.innerText =
+            messages[0];
+
+        }
+
+        else if(value < 35){
+
+            status.innerText =
+            messages[1];
+
+        }
+
+        else if(value < 55){
+
+            status.innerText =
+            messages[2];
+
+        }
+
+        else if(value < 75){
+
+            status.innerText =
+            messages[3];
+
+        }
+
+        else if(value < 95){
+
+            status.innerText =
+            messages[4];
+
+        }
+
+        else{
+
+            status.innerText =
+            messages[5];
+
+        }
+
+
+        if(value >= 100){
+
+            clearInterval(timer);
+
+            setTimeout(
+                showResult,
+                900
+            );
+
+        }
+
+    },120);
+
+}
+
+
+/* ==============================
+   RESULT
+============================== */
+
+function showResult(){
+
+    const name =
+    localStorage.getItem(
+        "trollName"
+    );
+
+    document
+    .getElementById("resultText")
+    .innerHTML =
+
+    "<b>" + name + "</b>" +
+    " có dấu hiệu cực kỳ đáng ngờ." +
+    "<br>Hệ thống yêu cầu xem kết quả chi tiết.";
+
+
+    changePage("page3");
+
+}
+
+
+/* ==============================
+   FINAL
+============================== */
+
+function showFinal(){
+
+    const name =
+    localStorage.getItem(
+        "trollName"
+    );
+
+    document
+    .getElementById("finalName")
+    .innerText = name;
+
+    changePage("page4");
+
+    confetti();
+
+}
+
+
+/* ==============================
+   TROLL BUTTON
+============================== */
+
+let escapeCount = 0;
+
+function escapeButton(){
+
+    escapeCount++;
+
+    const btn =
+    document.getElementById(
+        "escapeBtn"
+    );
+
+
+    if(escapeCount === 1){
+
+        btn.innerText =
+        "CHẮC KHÔNG? 🤨";
+
+    }
+
+    else if(escapeCount === 2){
+
+        btn.innerText =
+        "NGHĨ LẠI ĐI 😂";
+
+    }
+
+    else if(escapeCount === 3){
+
+        btn.innerText =
+        "RÕ RÀNG BỊ LỪA MÀ 😭";
+
+    }
+
+    else{
+
+        btn.innerText =
+        "OK BẠN THẮNG 😎";
+
+    }
+
+}
+
+
+/* ==============================
+   CONFETTI
+============================== */
+
+function confetti(){
+
+    const colors = [
+
+        "#ff668d",
+        "#7658ff",
+        "#ffd166",
+        "#06d6a0",
+        "#ffffff"
+
+    ];
+
+
+    for(let i=0;i<80;i++){
+
+        const piece =
+        document.createElement(
+            "div"
+        );
+
+        piece.className =
+        "confetti";
+
+
+        piece.style.left =
+        Math.random()*100 + "vw";
+
+
+        piece.style.background =
+        colors[
+            Math.floor(
+                Math.random()
+                *
+                colors.length
+            )
+        ];
+
+
+        piece.style.animationDuration =
+        (
+            Math.random()*2 + 2
+        )
+        + "s";
+
+
+        piece.style.transform =
+        "rotate("
+        +
+        Math.random()*360
+        +
+        "deg)";
+
+
+        document.body
+        .appendChild(piece);
+
+
+        setTimeout(
+            () =>
+            piece.remove(),
+            4500
+        );
+
+    }
+
+}
+
+
+/* ==============================
+   BACKGROUND
+============================== */
+
+for(let i=0;i<25;i++){
+
+    const dot =
+    document.createElement(
+        "div"
+    );
+
+    dot.className =
+    "bg-dot";
+
+
+    dot.style.left =
+    Math.random()*100
+    + "vw";
+
+
+    dot.style.animationDuration =
+    (
+        Math.random()*7 + 5
+    )
+    + "s";
+
+
+    dot.style.animationDelay =
+    (
+        Math.random()*5
+    )
+    + "s";
+
+
+    document.body
+    .appendChild(dot);
+
+}
+
+</script>
+
+</body>
+</html>
